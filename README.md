@@ -1,2 +1,3 @@
 # mindorks-beginner-course
-First android project
+This repo contains the project that I learned in the
+MindOrks Android beginner course
