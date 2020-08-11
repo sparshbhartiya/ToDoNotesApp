@@ -3,7 +3,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,22 +19,41 @@ public class MyNotesActivity extends AppCompatActivity {
     String fullName;
     FloatingActionButton fabAddNotes;
     TextView textViewTitle,textViewDescription;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_notes);
-        fabAddNotes = findViewById(R.id.fabAddNotes);
-        textViewTitle = findViewById(R.id.textViewTitle);
-        textViewDescription = findViewById(R.id.textViewDescription);
-        Intent intent = getIntent();
-        fullName = intent.getStringExtra("full_name");
-        getSupportActionBar().setTitle(fullName);
+        bindViews();
+        setupSharedPreferences();
+        getIntentData();
         fabAddNotes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setupDialogBox();
             }
         });
+        getSupportActionBar().setTitle(fullName);
+
+    }
+
+    private void setupSharedPreferences() {
+        sharedPreferences = getSharedPreferences(PrefConstant.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
+
+    }
+
+    private void getIntentData() {
+        Intent intent = getIntent();
+        fullName = intent.getStringExtra(AppConstant.FULL_NAME);
+        if(TextUtils.isEmpty(fullName)){
+            fullName = sharedPreferences.getString(PrefConstant.FULL_NAME,"");
+        }
+    }
+
+    private void bindViews(){
+        fabAddNotes = findViewById(R.id.fabAddNotes);
+        textViewTitle = findViewById(R.id.textViewTitle);
+        textViewDescription = findViewById(R.id.textViewDescription);
     }
     private void setupDialogBox(){
         View view = LayoutInflater.from(MyNotesActivity.this).inflate(R.layout.add_notes_dialog_layout,null);
