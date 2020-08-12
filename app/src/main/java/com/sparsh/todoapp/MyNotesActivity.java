@@ -1,6 +1,8 @@
 package com.sparsh.todoapp;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,12 +16,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sparsh.todoapp.adapter.NotesAdapter;
+import com.sparsh.todoapp.model.Notes;
+
+import java.util.ArrayList;
 
 public class MyNotesActivity extends AppCompatActivity {
     String fullName;
     FloatingActionButton fabAddNotes;
-    TextView textViewTitle,textViewDescription;
+    RecyclerView recyclerViewNotes;
     SharedPreferences sharedPreferences;
+    ArrayList<Notes> notesList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +59,8 @@ public class MyNotesActivity extends AppCompatActivity {
 
     private void bindViews(){
         fabAddNotes = findViewById(R.id.fabAddNotes);
-        textViewTitle = findViewById(R.id.textViewTitle);
-        textViewDescription = findViewById(R.id.textViewDescription);
+        recyclerViewNotes = findViewById(R.id.recyclerViewNotes);
+
     }
     private void setupDialogBox(){
         View view = LayoutInflater.from(MyNotesActivity.this).inflate(R.layout.add_notes_dialog_layout,null);
@@ -67,11 +74,25 @@ public class MyNotesActivity extends AppCompatActivity {
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textViewTitle.setText(editTextTitle.getText().toString());
-                textViewDescription.setText(editTextDescription.getText().toString());
+                String title = editTextTitle.getText().toString();
+                String description = editTextDescription.getText().toString();
+                Notes notes = new Notes();
+                notes.setTitle(title);
+                notes.setDescription(description);
+                notesList.add(notes);
+                setUpRecyclerView();
+                Log.d("MyNotesActivity", String.valueOf(notesList.size()));
                 dialog.hide();
             }
         });
         dialog.show();
+    }
+
+    private void setUpRecyclerView() {
+        NotesAdapter notes = new NotesAdapter(notesList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MyNotesActivity.this);
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        recyclerViewNotes.setLayoutManager(linearLayoutManager);
+        recyclerViewNotes.setAdapter(notes);
     }
 }
