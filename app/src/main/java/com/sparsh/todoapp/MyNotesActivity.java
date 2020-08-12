@@ -14,9 +14,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sparsh.todoapp.adapter.NotesAdapter;
+import com.sparsh.todoapp.clicklisteners.ItemClickListener;
 import com.sparsh.todoapp.model.Notes;
 
 import java.util.ArrayList;
@@ -76,10 +78,15 @@ public class MyNotesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String title = editTextTitle.getText().toString();
                 String description = editTextDescription.getText().toString();
-                Notes notes = new Notes();
-                notes.setTitle(title);
-                notes.setDescription(description);
-                notesList.add(notes);
+                if(!(TextUtils.isEmpty(title)) && !(TextUtils.isEmpty(description))) {
+                    Notes notes = new Notes();
+                    notes.setTitle(title);
+                    notes.setDescription(description);
+                    notesList.add(notes);
+                }else{
+                    Toast.makeText(MyNotesActivity.this,"Title and Description can't be empty",Toast.LENGTH_SHORT).show();
+
+                }
                 setUpRecyclerView();
                 Log.d("MyNotesActivity", String.valueOf(notesList.size()));
                 dialog.hide();
@@ -89,7 +96,16 @@ public class MyNotesActivity extends AppCompatActivity {
     }
 
     private void setUpRecyclerView() {
-        NotesAdapter notes = new NotesAdapter(notesList);
+        ItemClickListener itemClickListener = new ItemClickListener() {
+            @Override
+            public void onClick(Notes notes) {
+                Intent intent = new Intent(MyNotesActivity.this,DetailActivity.class);
+                intent.putExtra("title",notes.getTitle());
+                intent.putExtra("description",notes.getDescription());
+                startActivity(intent);
+            }
+        };
+        NotesAdapter notes = new NotesAdapter(notesList,itemClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MyNotesActivity.this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerViewNotes.setLayoutManager(linearLayoutManager);

@@ -1,4 +1,5 @@
 package com.sparsh.todoapp.adapter;
+import com.sparsh.todoapp.clicklisteners.ItemClickListener;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,11 @@ import com.sparsh.todoapp.model.Notes;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
-    List<Notes> listNotes;
-    public NotesAdapter(List<Notes> list){
+    private List<Notes> listNotes;
+    private ItemClickListener itemClickListener;
+    public NotesAdapter(List<Notes> list,ItemClickListener itemClickListener){
         this.listNotes = list;
+        this.itemClickListener = itemClickListener;
     }
     @NonNull
     @Override
@@ -27,11 +30,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull NotesAdapter.ViewHolder holder, int position) {
-        Notes notes = listNotes.get(position);
+        final Notes notes = listNotes.get(position);
         String title = notes.getTitle();
         String description = notes.getDescription();
         holder.textViewTitle.setText(title);
         holder.textViewDescription.setText(description);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemClickListener.onClick(notes);
+            }
+        });
     }
 
     @Override
