@@ -10,10 +10,10 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Mindorks"
+        app:layout_constraintStart_toEndOf="@+id/checkboxMarkStatus"
+        android:text="Title"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
@@ -27,12 +27,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Mindorks"
+            android:text="Description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/textViewTitle"
             app:layout_constraintStart_toStartOf="@id/textViewTitle"
             app:layout_constraintTop_toBottomOf="@id/textViewTitle">
 
         </TextView>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkboxMarkStatus"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewDescription"
+            app:layout_constraintTop_toTopOf="@+id/textViewTitle"></CheckBox>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
