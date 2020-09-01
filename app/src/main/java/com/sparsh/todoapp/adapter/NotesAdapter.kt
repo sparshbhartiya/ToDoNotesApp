@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sparsh.todoapp.R
 import com.sparsh.todoapp.clicklisteners.ItemClickListener
 import com.sparsh.todoapp.db.Notes
@@ -26,6 +28,7 @@ class NotesAdapter(val list: List<Notes>, val itemClickListener:ItemClickListene
         holder.textViewTitle.text = title
         holder.textViewDescription.text = description
         holder.checkBoxMarkStatus.isChecked = notes.isTaskCompleted
+        Glide.with(holder.itemView).load(notes.imagePath).into(holder.imageView)
         holder.itemView.setOnClickListener(object:View.OnClickListener{
             override fun onClick(p0: View?) {
                 itemClickListener.onClick(notes)
@@ -50,6 +53,7 @@ class NotesAdapter(val list: List<Notes>, val itemClickListener:ItemClickListene
         var textViewTitle : TextView = itemView.findViewById(R.id.textViewTitle)
         var textViewDescription : TextView = itemView.findViewById(R.id.textViewDescription)
         var checkBoxMarkStatus : CheckBox = itemView.findViewById(R.id.checkboxMarkStatus)
+        var imageView : ImageView = itemView.findViewById(R.id.imageView)
     }
 
 }

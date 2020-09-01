@@ -3,6 +3,7 @@ package com.sparsh.todoapp.views
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -22,6 +23,9 @@ import com.sparsh.todoapp.clicklisteners.ItemClickListener
 import com.sparsh.todoapp.db.Notes
 
 class MyNotesActivity:AppCompatActivity() {
+    companion object{
+        const val ADD_NOTES_CODE = 100
+    }
     lateinit var fullName : String
     lateinit var fabAddNotes : FloatingActionButton
     lateinit var recyclerViewNotes : RecyclerView
@@ -45,8 +49,10 @@ class MyNotesActivity:AppCompatActivity() {
 
     private fun clickListeners() {
         fabAddNotes.setOnClickListener(object: View.OnClickListener{
-            override fun onClick(p0: View?) {
-                setupDialogBox()
+            override fun onClick(v: View?) {
+                val intent = Intent(this@MyNotesActivity,AddNotesActivity::class.java)
+                startActivityForResult(intent,ADD_NOTES_CODE)
+                //Need to implement onActivityResult() for handling data coming from AddNotesActivity
             }
 
         })
@@ -58,25 +64,7 @@ class MyNotesActivity:AppCompatActivity() {
         }
     }
 
-    private fun setupDialogBox() {
-        val view = LayoutInflater.from(this@MyNotesActivity).inflate(R.layout.add_notes_dialog_layout,null)
-        val editTextTitle = view.findViewById<EditText>(R.id.editTextTitle)
-        val editTextDescription = view.findViewById<EditText>(R.id.editTextDescription)
-        val buttonSubmit = view.findViewById<Button>(R.id.buttonSubmit)
-        val dialog  =  AlertDialog.Builder(this).setView(view).
-        setCancelable(false).create()
-        buttonSubmit.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                val title = editTextTitle.getText().toString()
-                val description = editTextDescription.getText().toString()
-                val notes = Notes(title =title,description =  description)
-                notesList.add(notes)
-                addNotesToDb(notes)
-                dialog.hide()
-            }
-        })
-        dialog.show()
-    }
+
 
     private fun getDataFromDb() {
         //select data from database
@@ -130,6 +118,22 @@ class MyNotesActivity:AppCompatActivity() {
         fullName = intent.getStringExtra(AppConstant.FULL_NAME).toString()
         if(fullName.isEmpty()){
             fullName = sharedPreferences.getString(PrefConstant.FULL_NAME,"").toString()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode== ADD_NOTES_CODE){
+            val title = data?.getStringExtra("title")
+            val description = data?.getStringExtra("description")
+            val imagePath = data?.getStringExtra("image_path")
+            val notesApp = applicationContext as NotesApp
+            val notesDao = notesApp.getNotesdb().NotesDao()
+            val notes = Notes(title = title!!,description = description!!,imagePath = imagePath!!)
+            notesList.add(notes)
+            notesDao.insert(notes)
+            recyclerViewNotes.adapter?.notifyItemChanged(notesList.size-1)
+
         }
     }
 
