@@ -74,8 +74,8 @@ class AddNotesActivity : AppCompatActivity() {
         if(permissionStorage != PackageManager.PERMISSION_GRANTED){
             listPermissionsNeeded.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
-        if(permissionStorage != PackageManager.PERMISSION_GRANTED){
-            listPermissionsNeeded.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        if(permissionCamera != PackageManager.PERMISSION_GRANTED){
+            listPermissionsNeeded.add(android.Manifest.permission.CAMERA)
         }
         if(listPermissionsNeeded.isNotEmpty()){
             ActivityCompat.requestPermissions(this,listPermissionsNeeded.toTypedArray<String>(),MY_PERMISSION_CODE)
